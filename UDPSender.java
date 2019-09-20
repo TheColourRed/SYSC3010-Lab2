@@ -6,7 +6,7 @@ public class UDPSender {
 	public static void main(String[] args) 
    {
 	      // Check the arguments
-	      if( args.length != 2 )
+	      if( args.length != 3 )
 	      {
 	         System.out.println( "usage: java UDPSender host port" ) ;
 	         return ;
@@ -15,8 +15,9 @@ public class UDPSender {
 	      try
 	      {
 	         // Convert the arguments first, to ensure that they are valid
-	         InetAddress host = InetAddress.getByName( args[0] ) ;
-	         int port         = Integer.parseInt( args[1] ) ;
+	         final InetAddress host = InetAddress.getByName( args[0] ) ;
+	         final int port         = Integer.parseInt( args[1] ) ;
+	         final int numSend      = Integer.parseInt( args[2] );
 	         socket = new DatagramSocket() ;
      
 	         Scanner in;
@@ -28,9 +29,14 @@ public class UDPSender {
 	        		 message = in.nextLine();
 	        		 if (message.length()==0) break;
 	        		 byte [] data = message.getBytes() ;
-	        		 DatagramPacket packet = new DatagramPacket( data, data.length, host, port ) ;
-	        		 socket.send( packet ) ;
-	         } 
+
+	        		 for (int i = 0; i < numSend; i++) {
+						 DatagramPacket packet = new DatagramPacket( data, data.length, host, port ) ;
+						 socket.send( packet ) ;
+						 socket.receive( packet );
+						 System.out.println( packet.getAddress() + " " + packet.getPort() + ": " + new String(packet.getData()).trim() ) ;
+					 }
+	         }
 	         System.out.println ("Closing down");
 	      }
 	      catch( Exception e )

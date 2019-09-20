@@ -28,6 +28,9 @@ public class UDPReceiver {
 	            socket.receive( packet ) ;
 
 	            System.out.println( packet.getAddress() + " " + packet.getPort() + ": " + new String(packet.getData()).trim() ) ;
+
+				packet.setData(("ACK: " + new String(packet.getData()).trim()).getBytes());
+			 	socket.send( packet );
 	        }  
 	     }
 	     catch( Exception e )
